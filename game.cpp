@@ -33,6 +33,9 @@ Game::Game() : mWindow(sf::VideoMode(800, 600), "Spacefighter"), mPlayer(), spr2
     // tx.loadFromFile("textures/ship1.png");
     mPlayer.setTexture(mTextures.get(Textures::Airplane));
     // mPlayer.setTexture(tx);
+    sf::FloatRect rect(mPlayer.getGlobalBounds());
+
+    mPlayer.setOrigin(rect.width / 2, rect.height / 2);
     mPlayer.setPosition(250.f, 150.f);
 }
 
@@ -59,13 +62,27 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 {
 
     if (key == sf::Keyboard::W)
+    {
         mIsMovingUp = isPressed;
+        mPlayer.setRotation(0);
+    }
+
     if (key == sf::Keyboard::S)
+    {
         mIsMovingDown = isPressed;
+        mPlayer.setRotation(180);
+    }
+
     if (key == sf::Keyboard::A)
+    {
         mIsMovingLeft = isPressed;
+        mPlayer.setRotation(-90);
+    }
     if (key == sf::Keyboard::D)
+    {
         mIsMovingRight = isPressed;
+        mPlayer.setRotation(90);
+    }
 }
 
 void Game::processEvents()
