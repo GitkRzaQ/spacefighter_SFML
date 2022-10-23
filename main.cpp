@@ -14,10 +14,13 @@ public:
 
     void run()
     {
+        sf::Clock clock;
         while (mWindow.isOpen())
         {
+            sf::Time deltaTime = clock.restart();
+
             processEvents();
-            update();
+            update(deltaTime);
             render();
         }
     }
@@ -25,7 +28,7 @@ public:
 private:
     void processEvents();
     void handlePlayerInput(sf::Keyboard::Key key, bool isPressed);
-    void update();
+    void update(sf::Time deltaTime);
     void render();
 
 private:
@@ -83,20 +86,20 @@ void Game::render()
     mWindow.display();
 }
 
-void Game::update()
+void Game::update(sf::Time deltaTime)
 {
-
+    int multiplier = 200;
     sf::Vector2f movement(0.f, 0.f);
     if (mIsMovingUp)
-        movement.y -= 1.f;
+        movement.y -= multiplier * 1.f;
     if (mIsMovingDown)
-        movement.y += 1.f;
+        movement.y += multiplier * 1.f;
     if (mIsMovingLeft)
-        movement.x -= 1.f;
+        movement.x -= multiplier * 1.f;
     if (mIsMovingRight)
-        movement.x += 1.f;
+        movement.x += multiplier * 1.f;
 
-    mPlayer.move(movement);
+    mPlayer.move(movement * deltaTime.asSeconds());
 }
 
 int main()
