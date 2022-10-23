@@ -3,52 +3,36 @@
 #include <map>
 #include <iostream>
 
-namespace Textures
+bool TextureHolder::load(Textures::ID id, const std::string &filename)
 {
-    enum ID
+    std::cout << "Loading textures" << std::endl;
+    std::unique_ptr<sf::Texture> texture(new sf::Texture);
+    if (!texture->loadFromFile(filename))
     {
-        Landscape,
-        Airplane,
-        Missile
-    };
-
-    class TextureHolder
-    {
-    public:
-        bool load(Textures::ID id, const std::string &filename);
-        sf::Texture &get(Textures::ID id);
-        const sf::Texture &get(Textures::ID id) const;
-
-    private:
-        std::map<Textures::ID, std::unique_ptr<sf::Texture>> mTextureMap;
-    };
-
-    bool TextureHolder::load(Textures::ID id, const std::string &filename)
-    {
-        std::unique_ptr<sf::Texture> texture(new sf::Texture);
-        if (!texture->loadFromFile(filename))
-        {
-            std::cout << "could not load texture from " << filename << std::endl;
-            return false;
-        }
-
-        mTextureMap.insert(std::make_pair(id, std::move(texture)));
-        return true;
+        std::cout << "could not load texture from " << filename << std::endl;
+        return false;
     }
+    else
+        std::cout << "Texture " << filename << " loaded" << filename << std::endl;
 
-    sf::Texture &TextureHolder::get(Textures::ID id)
-    {
-        auto found = mTextureMap.find(id);
-        return *found->second;
-    }
+    mTextureMap.insert(std::make_pair(id, std::move(texture)));
+    return true;
 }
 
-Game::Game() : mWindow(sf::VideoMode(800, 600), "Spacefighter"), mPlayer()
+sf::Texture &TextureHolder::get(Textures::ID id)
 {
-    Textures::TextureHolder textures;
-    textures.load(Textures::Airplane, "textures/ship.png");
+    auto found = mTextureMap.find(id);
+    return *found->second;
+}
 
-    mPlayer.setTexture(textures.get(Textures::Airplane));
+Game::Game() : mWindow(sf::VideoMode(800, 600), "Spacefighter"), mPlayer(), spr2()
+{
+    mTextures.load(Textures::Airplane, "textures/ship1.png");
+
+    // sf::Texture tx;
+    // tx.loadFromFile("textures/ship1.png");
+    mPlayer.setTexture(mTextures.get(Textures::Airplane));
+    // mPlayer.setTexture(tx);
     mPlayer.setPosition(250.f, 150.f);
 }
 

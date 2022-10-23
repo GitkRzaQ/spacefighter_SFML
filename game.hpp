@@ -9,6 +9,27 @@
 #include <map>
 #include <iostream>
 
+namespace Textures
+{
+    enum ID
+    {
+        Landscape,
+        Airplane,
+        Missile
+    };
+}
+
+class TextureHolder
+{
+public:
+    bool load(Textures::ID id, const std::string &filename);
+    sf::Texture &get(Textures::ID id);
+    const sf::Texture &get(Textures::ID id) const;
+
+private:
+    std::map<Textures::ID, std::unique_ptr<sf::Texture>> mTextureMap;
+};
+
 class Game
 {
 public:
@@ -24,6 +45,8 @@ private:
 private:
     sf::RenderWindow mWindow;
     sf::Sprite mPlayer;
+    sf::Sprite spr2;
+    TextureHolder mTextures;
 
     bool mIsMovingUp;
     bool mIsMovingDown;
