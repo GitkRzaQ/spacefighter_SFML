@@ -28,11 +28,11 @@ sf::Texture &TextureHolder::get(Textures::ID id)
 Game::Game() : mWindow(sf::VideoMode(800, 600), "Spacefighter"), mPlayer(), spr2()
 {
     mTextures.load(Textures::Airplane, "textures/ship1.png");
-
-    // sf::Texture tx;
-    // tx.loadFromFile("textures/ship1.png");
     mPlayer.setTexture(mTextures.get(Textures::Airplane));
-    // mPlayer.setTexture(tx);
+    sf::FloatRect rect(mPlayer.getGlobalBounds());
+
+    mPlayer.setOrigin(rect.width / 2, rect.height / 2);
+    mPlayer.setScale(0.5f, 0.5f);
     mPlayer.setPosition(250.f, 150.f);
 }
 
@@ -59,13 +59,23 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 {
 
     if (key == sf::Keyboard::W)
+    {
         mIsMovingUp = isPressed;
+    }
+
     if (key == sf::Keyboard::S)
+    {
         mIsMovingDown = isPressed;
+    }
+
     if (key == sf::Keyboard::A)
+    {
         mIsMovingLeft = isPressed;
+    }
     if (key == sf::Keyboard::D)
+    {
         mIsMovingRight = isPressed;
+    }
 }
 
 void Game::processEvents()
@@ -105,13 +115,25 @@ void Game::update(sf::Time deltaTime)
     int multiplier = 200;
     sf::Vector2f movement(0.f, 0.f);
     if (mIsMovingUp)
+    {
+        mPlayer.setRotation(0);
         movement.y -= multiplier * 1.f;
+    }
     if (mIsMovingDown)
+    {
+        mPlayer.setRotation(180);
         movement.y += multiplier * 1.f;
+    }
     if (mIsMovingLeft)
+    {
+        mPlayer.setRotation(-90);
         movement.x -= multiplier * 1.f;
+    }
     if (mIsMovingRight)
+    {
+        mPlayer.setRotation(90);
         movement.x += multiplier * 1.f;
+    }
 
     mPlayer.move(movement * deltaTime.asSeconds());
 }
