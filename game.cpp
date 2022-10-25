@@ -43,6 +43,12 @@ void Game::run()
     sf::Clock clock;
     sf::Time timeSinceLastUpdate = sf::Time::Zero;
 
+    multiplier = 10;
+    movement = sf::Vector2f(0, 0);
+
+    winsize.x = mWindow.getSize().x - 1;
+    winsize.y = mWindow.getSize().y - 1;
+
     while (mWindow.isOpen())
     {
         timeSinceLastUpdate += clock.restart();
@@ -51,6 +57,9 @@ void Game::run()
             timeSinceLastUpdate -= TimePerFrame;
             processEvents();
             update(TimePerFrame);
+            // std::cout << "winsize.y " << winsize.x
+            //           << "\tPlayer.y " << mPlayer.getPosition().y
+            //           << "\tTexture.y " << mPlayer.getTexture()->getSize().y << std::endl;
         }
         render();
     }
@@ -105,6 +114,8 @@ void Game::processEvents()
 
 void Game::render()
 {
+    sf::Vector2f windowWidth(mWindow.getSize());
+    // std::cout << "Window size: " << windowWidth.x << " x " << windowWidth.y << std::endl;
     mWindow.clear();
     mWindow.draw(mPlayer);
     mWindow.display();
@@ -112,28 +123,59 @@ void Game::render()
 
 void Game::update(sf::Time deltaTime)
 {
-    int multiplier = 200;
-    sf::Vector2f movement(0.f, 0.f);
+
+    std::cout << "Player.y < 0 ? " << ((mPlayer.getPosition().y <= 0.f) ? "true" : "false")
+              << "\tPlayer.y " << mPlayer.getPosition().y
+              << "\tMovement.x " << movement.x
+              << "\tMovement.y " << movement.y
+              << "\tTexture.y " << mPlayer.getTexture()->getSize().y << std::endl;
+    // if (mIsMovingUp && (mPlayer.getPosition() < winsize) && mPlayer.getPosition() != sf::Vector2f(0,0))
     if (mIsMovingUp)
     {
+
         mPlayer.setRotation(0);
         movement.y -= multiplier * 1.f;
     }
+    // bounce of the upper wall
+    if (mPlayer.getPosition().y <= 30)
+    {
+        movement.y = 150.f;
+    }
+
     if (mIsMovingDown)
     {
         mPlayer.setRotation(180);
         movement.y += multiplier * 1.f;
     }
+    // bounce of the down wall
+    if (mPlayer.getPosition().y >= mWindow.getSize().y - 25)
+    {
+        movement.y = -150.f;
+    }
+
     if (mIsMovingLeft)
     {
         mPlayer.setRotation(-90);
         movement.x -= multiplier * 1.f;
     }
+    // bounce of the left wall
+    if (mPlayer.getPosition().x <= 30)
+    {
+        movement.x = 150.f;
+    }
+
     if (mIsMovingRight)
     {
         mPlayer.setRotation(90);
         movement.x += multiplier * 1.f;
     }
+    // bounce of the right wall
+    if (mPlayer.getPosition().x >= mWindow.getSize().x - 25)
+    {
+        movement.x = -150.f;
+    }
+    if (!mIsMovingUp && !mIsMovingDown && !mIsMovingLeft && !mIsMovingRight)
+        movement += sf::Vector2f(-movement.x / 50, -movement.y / 50);
 
     mPlayer.move(movement * deltaTime.asSeconds());
 }

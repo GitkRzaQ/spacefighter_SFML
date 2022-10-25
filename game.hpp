@@ -48,6 +48,10 @@ private:
     sf::Sprite spr2;
     TextureHolder mTextures;
 
+    sf::Vector2f movement;
+    sf::Vector2f winsize;
+    int multiplier;
+
     bool mIsMovingUp;
     bool mIsMovingDown;
     bool mIsMovingLeft;
